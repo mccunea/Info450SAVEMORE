@@ -6,28 +6,27 @@
 #include <stdio.h>
 #include <string>
 using namespace std;
-
+char answer;
 class BankAccount {
 protected:
 	static int NumberGenerator;
 	int accountNumber;
-	int interestRate;
-	int balance;
-	int withdrawlAmount;
-	int depositAmount;
+	double interestRate;
+	double balance;
+	double withdrawlAmount;
+	double depositAmount;
 
 public:
 
-	BankAccount(int a, int b) {
-		accountNumber = a;
+	BankAccount(double b) {
 		balance = b;
 		accountNumber = NumberGenerator;
 		NumberGenerator++;
 	}
 
 
-	virtual int withdrawl() = 0;
-	virtual int deposit() = 0;
+	virtual double withdrawl() = 0;
+	virtual double deposit() = 0;
 	virtual void display() = 0;
 
 };
@@ -35,8 +34,8 @@ public:
 class CheckingAccount: public BankAccount {
 	char answer;
 public: 
-	
-	int deposit() {
+	CheckingAccount(int b) : BankAccount(b) {}
+	double deposit() {
 		cout << "How much would you like to deposit?" << endl;
 		cin >> depositAmount;
 		balance += depositAmount;
@@ -44,7 +43,7 @@ public:
 		return balance;
 	}
 
-	int withdrawl() {
+	double withdrawl() {
 		cout << "How much would you like to withdrawl?" << endl;
 		cin >> withdrawlAmount;
 		balance -= withdrawlAmount;
@@ -56,7 +55,7 @@ public:
 		return balance;
 	}
 
-	int orderChecks() {
+	double orderChecks() {
 		cout << "Order checks? Y/N" << endl;
 		cin >> answer;
 		if (answer == 'Y' || answer == 'y')
@@ -77,9 +76,10 @@ public:
 
 class Savings : public BankAccount {
 
-	int *interestPointer = &interestRate;
+	
 public:
-	Savings(int a, int b, int i) :BankAccount(a, b) {
+	
+	Savings( double b, double i) :BankAccount( b) {
 		if (balance <= 10000)
 		{
 			i = .01;
@@ -91,21 +91,26 @@ public:
 		interestRate = i;
 	}
 
-	int deposit(*interestPointer) {
+	double deposit() {
 		cout << "How much would you like to deposit?" << endl;
 		cin >> depositAmount;
 		balance += depositAmount;
 		if (balance > 10000)
-			(*interestRate) = .02; // this may need to be made static for the update to happen since this is not returned from the function. 
+			interestRate = .02; 
 		return balance;
 	}
 
+	double withdrawl() {}
+	void display() {}
 
 };
 
+int BankAccount::NumberGenerator = 1;
+
 int main()
 {
-	
+
+
     return 0;
 }
 
