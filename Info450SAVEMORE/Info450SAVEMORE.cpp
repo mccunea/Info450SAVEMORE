@@ -25,8 +25,8 @@ public:
 	}
 
 
-	virtual double withdrawl() = 0;
-	virtual double deposit() = 0;
+	virtual int withdrawl() = 0;
+	virtual int deposit() = 0;
 	virtual void display() = 0;
 
 };
@@ -35,27 +35,38 @@ class CheckingAccount: public BankAccount {
 	char answer;
 public: 
 	CheckingAccount(int b) : BankAccount(b) {}
-	double deposit() {
+	int deposit() {
 		cout << "How much would you like to deposit?" << endl;
 		cin >> depositAmount;
+		if (depositAmount < 0)
+		{
+			cout << "Cannot deposit a negative amount" << endl;
+			return -1;
+		}
+		else
 		balance += depositAmount;
-
-		return balance;
+		return 0;
 	}
 
-	double withdrawl() {
+	int withdrawl() {
 		cout << "How much would you like to withdrawl?" << endl;
 		cin >> withdrawlAmount;
+		if (withdrawlAmount > balance) {
+			cout << "Withdrawl amount cannot exceed your current balance plus any additional fees." << endl;
+			return -1;
+		}
+		else
 		balance -= withdrawlAmount;
 		if (balance < 500)
 		{
 			balance -= 5;
 			cout << "A fee of five dollars has been subtracted from your account for failure to meet your account threshold." << endl;
 		}
-		return balance;
+		
+		return 0;
 	}
 
-	double orderChecks() {
+	int orderChecks() {
 		cout << "Order checks? Y/N" << endl;
 		cin >> answer;
 		if (answer == 'Y' || answer == 'y')
@@ -63,7 +74,9 @@ public:
 			balance -= 15;
 			cout << "Checks ordered!" << endl;
 		}
-		return balance;
+		else
+			cout << "Ok you can order any time!" << endl;
+		return 0;
 	}
 
 	void display() {
@@ -79,29 +92,112 @@ class Savings : public BankAccount {
 	
 public:
 	
-	Savings( double b, double i) :BankAccount( b) {
+	Savings( double b) :BankAccount( b) {
 		if (balance <= 10000)
 		{
-			i = .01;
+			interestRate = .01;
 		}
 		else
 		{
-			i = .02;
+			interestRate = .02;
 		}
-		interestRate = i;
+		
 	}
 
-	double deposit() {
+	int deposit() {
 		cout << "How much would you like to deposit?" << endl;
 		cin >> depositAmount;
+		if (depositAmount < 0)
+		{
+			cout << "Cannot deposit a negative amount" << endl;
+			return -1;
+		}
+		else
 		balance += depositAmount;
 		if (balance > 10000)
-			interestRate = .02; 
-		return balance;
+		{
+			interestRate = .02;
+		}
+		return 0;
 	}
 
-	double withdrawl() {}
-	void display() {}
+	int withdrawl() {
+		cout << "How much would you like to withdrawl?" << endl;
+		cin >> withdrawlAmount;
+		if (withdrawlAmount > balance - 2) {
+			cout << "Withdrawl amount cannot exceed your current balance plus any additional fees." << endl;
+			return -1;
+		}
+		else
+		balance -= withdrawlAmount;
+		
+		balance -= 2;
+		cout << "A 2 dollar charge has been applied to your withdrawl." << endl;
+		if (balance <= 10000)
+		{
+			interestRate = .01;
+		}
+		return 0;
+	}
+	void display() {
+		cout << "Your account number is: " << accountNumber << endl;
+		cout << "Your account balance is: " << balance << endl;
+		cout << "Your interest rate is: " << interestRate << endl;
+	}
+
+};
+
+class CD : public BankAccount {
+	int term;
+public: 
+	
+	CD(double b) : BankAccount(b) {
+		cout << "What is the ter of your CD?" << endl;
+		cin >> term;
+		if (term >= 5)
+		{
+			interestRate = .1;
+		}
+		else
+		{
+			interestRate = .05;
+		}
+	}
+
+	int deposit() {
+		cout << "How much would you like to deposit?" << endl;
+		cin >> depositAmount;
+		if (depositAmount < 0)
+		{
+			cout << "Cannot deposit a negative amount" << endl;
+			return -1;
+		}
+		else
+		balance += depositAmount;
+		
+		return 0;
+	}
+
+	int withdrawl() {
+		cout << "How much would you like to withdrawl?" << endl;
+		cin >> withdrawlAmount;
+		if (withdrawlAmount > balance - (balance * .1)) {
+			cout << "Withdrawl amount cannot exceed your current balance plus any additional fees." << endl;
+			return -1;
+		}
+		else
+		balance -= withdrawlAmount;
+		balance -= (balance * .1);
+		cout << "A 10% charge to the principal of your account has been applied to your withdrawl." << endl;
+		return 0;
+	}
+	void display() {
+		cout << "Your account number is: " << accountNumber << endl;
+		cout << "Your account balance is: " << balance << endl;
+		cout << "Your interest rate is: " << interestRate << endl;
+	}
+
+
 
 };
 
@@ -109,8 +205,9 @@ int BankAccount::NumberGenerator = 1;
 
 int main()
 {
-
-
+	CD test(10000);
+	test.withdrawl();
+	test.display();
     return 0;
 }
 
