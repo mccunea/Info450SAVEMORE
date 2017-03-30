@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <Windows.h>
+
 using namespace std;
 
 class BankAccount {
@@ -15,12 +17,14 @@ protected:
 	double balance;
 	double withdrawlAmount;
 	double depositAmount;
-
+	SYSTEMTIME openDate;
+	
 public:
 
 	BankAccount(double b) {
 		balance = b;
-		accountNumber = NumberGenerator;
+		GetLocalTime(&openDate);
+ 		accountNumber = NumberGenerator;
 		NumberGenerator++;
 	}
 
@@ -84,8 +88,9 @@ public:
 
 	void display() {
 		cout << "Your checking account number is: " << accountNumber << endl;
-		cout << "Your checking account balance is: " << balance << endl << endl;
-		
+		cout << "Your checking account balance is: " << balance << endl;
+		cout << "Account created: " << openDate.wMonth  << "/";
+		cout << openDate.wDay << "/" << openDate.wYear << endl << endl;
 	}
 	int interest() {
 		cout << "Nothing to see here!" << endl;
@@ -152,6 +157,8 @@ public:
 		cout << "Your savings account number is: " << accountNumber << endl;
 		cout << "Your savings account balance is: " << balance << endl;
 		cout << "Your interest rate is: " << interestRate << endl << endl;
+		cout << "Account created: " << openDate.wMonth << "/";
+		cout << openDate.wDay << "/" << openDate.wYear << endl << endl;
 	}
 
 	int interest() {
@@ -214,6 +221,8 @@ public:
 		cout << "Your CD account number is: " << accountNumber << endl;
 		cout << "Your CD account balance is: " << balance << endl;
 		cout << "Your interest rate is: " << interestRate << endl << endl;
+		cout << "Account created: " << openDate.wMonth << "/";
+		cout << openDate.wDay << "/" << openDate.wYear << endl << endl;
 	}
 
 	int interest() {
